@@ -1,0 +1,52 @@
+[
+{
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+        "name": "Электроника",
+        "description": "Гаджеты и устройства"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+        "name": "Одежда",
+        "description": "Мужская и женская одежда"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+        "name": "Бытовая техника",
+        "description": "Техника для дома"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+        "name": "Смартфон Samsung Galaxy",
+        "description": "Мощный телефон с большим экраном",
+        "image": "",
+        "category": 1,
+        "purchase_price": "899.99",
+        "created_at": "2025-10-16T16:56:33.324Z",
+        "updated_at": "2025-10-16T16:56:33.324Z"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+        "name": "Футболка Nike",
+        "description": "Хлопковая футболка с логотипом",
+        "image": "",
+        "category": 2,
+        "purchase_price": "29.99",
+        "created_at": "2025-10-16T16:56:56.890Z",
+        "updated_at": "2025-10-16T16:57:58.745Z"
+    }
+}
+]
