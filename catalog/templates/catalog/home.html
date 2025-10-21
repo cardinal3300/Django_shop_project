@@ -16,13 +16,28 @@
     </div>
 </nav>
 
-<div class="container">
-    <div class="p-5 mb-4 bg-light rounded-3">
-        <div class="container-fluid py-5">
-            <h1 class="display-5 fw-bold">Добро пожаловать в наш интернет-магазин!</h1>
-            <p class="col-md-8 fs-4">Здесь вы найдёте лучшие товары по выгодным ценам.</p>
-            <a class="btn btn-primary btn-lg" href="/contacts/">Связаться с нами</a>
+<div class="container mt-4">
+    <h1 class="mb-4">Наши товары</h1>
+
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="max-height: 250px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted">{{ product.category.name }}</p>
+                    <p class="card-text">{{ product.description|slice:":100" }}{% if product.description|length > 100 %}...{% endif %}</p>
+                    <p class="fw-bold">{{ product.price }} ₽</p>
+                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
         </div>
+        {% empty %}
+        <p>Товаров пока нет 😔</p>
+        {% endfor %}
     </div>
 </div>
 

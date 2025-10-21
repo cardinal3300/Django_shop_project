@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from .forms import FeedbackForm
+from django.shortcuts import render, get_object_or_404
+from .models import Product
 
 
 def home(request):
@@ -9,22 +9,17 @@ def home(request):
     """
     return render(request, 'catalog/home.html')
 
+
 def contacts(request):
     """
     Контроллер для отображения страницы с контактной информацией.
     """
-    success_message = None  # сообщение об успешной отправке
-    if request.method == "POST":
-        form = FeedbackForm(request.POST)
-        if form.is_valid():
-            # здесь можно добавить логику отправки email или сохранения данных в БД
-            success_message = "Спасибо! Ваше сообщение успешно отправлено."
-            form = FeedbackForm()  # очистим форму после успешной отправки
-    else:
-        form = FeedbackForm()
+    return render(request, 'catalog/contacts.html')
 
-    context = {
-        'form': form,
-        'success_message': success_message,
-    }
-    return render(request, 'catalog/contacts.html', context)
+
+def product_detail(request, pk):
+    """
+    Контроллер для отображения подробной информации о товаре.
+    """
+    product = get_object_or_404(Product, pk=pk)
+    return render(request, 'catalog/product_detail.html', {'product': product})
