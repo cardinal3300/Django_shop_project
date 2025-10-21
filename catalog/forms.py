@@ -1,4 +1,5 @@
 from django import forms
+from .models import Product, Category
 
 
 class FeedbackForm(forms.Form):
@@ -15,3 +16,13 @@ class FeedbackForm(forms.Form):
         label="Сообщение",
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Ваше сообщение...'})
     )
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'image', 'category', 'purchase_price']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'price': forms.NumberInput(attrs={'step': 0.01}),
+        }

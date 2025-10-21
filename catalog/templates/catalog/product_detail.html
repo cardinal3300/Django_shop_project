@@ -4,23 +4,23 @@
 
 {% block content %}
 <div class="container mt-4">
-    <div class="row">
+    <h1>{{ product.name }}</h1>
+
+    <div class="row mt-4">
         <div class="col-md-6">
             {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded shadow-sm">
+            <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
             {% else %}
-                <img src="https://via.placeholder.com/500x400?text=Нет+изображения" alt="Нет изображения" class="img-fluid rounded shadow-sm">
+            <img src="https://via.placeholder.com/500x400?text=Нет+изображения" class="img-fluid" alt="Нет изображения">
             {% endif %}
         </div>
         <div class="col-md-6">
-            <h2>{{ product.name }}</h2>
             <p><strong>Категория:</strong> {{ product.category.name }}</p>
-            <hr>
             <p><strong>Описание:</strong> {{ product.description }}</p>
             <p><strong>Цена:</strong> {{ product.price }} ₽</p>
             <p><strong>Дата создания:</strong> {{ product.created_at|date:"d.m.Y H:i" }}</p>
-            <p><strong>Последнее обновление:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}</p>
-            <a href="/" class="btn btn-secondary mt-3">← Назад на главную</a>
+            <p><strong>Последнее изменение:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}</p>
+            <a href="/" class="btn btn-secondary mt-3">Назад на главную</a>
         </div>
     </div>
 </div>
