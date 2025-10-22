@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="card mb-4">
+    {% if product.image %}
+    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+    {% endif %}
+    <div class="card-body">
+        <h2 class="card-title">{{ product.name }}</h2>
+        <p class="card-text">{{ product.description }}</p>
+        <p><strong>Категория:</strong> {{ product.category.name }}</p>
+        <p><strong>Цена:</strong> {{ product.purchase_price }} ₽</p>
+        <p><strong>Дата создания:</strong> {{ product.created_at|date:"d.m.Y H:i" }}</p>
+        <p><strong>Последнее изменение:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}</p>
+    </div>
+</div>
+<a href="/" class="btn btn-secondary">Назад</a>
+{% endblock %}
