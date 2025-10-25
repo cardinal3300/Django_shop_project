@@ -1,18 +1,25 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% block title %}Блог{% endblock %}
+
 {% block content %}
-<h2>Блог</h2>
-{% for post in posts %}
-  <div class="card mb-3">
-    {% if post.preview %}
-      <img src="{{ post.preview.url }}" class="card-img-top" alt="{{ post.title }}">
-    {% endif %}
-    <div class="card-body">
-      <h5 class="card-title">{{ post.title }}</h5>
-      <p class="card-text">{{ post.content|truncatechars:150 }}</p>
-      <a href="{% url 'blog:detail' post.pk %}" class="btn btn-primary">Подробнее</a>
+<h1>Блог</h1>
+<div class="row">
+    {% for post in posts %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if post.preview %}
+            <img src="{{ post.preview.url }}" class="card-img-top" alt="{{ post.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ post.title }}</h5>
+                <p class="card-text">{{ post.content|truncatechars:100 }}</p>
+                <a href="{% url 'blog:detail' post.pk %}" class="btn btn-primary">Подробнее</a>
+            </div>
+        </div>
     </div>
-  </div>
-{% empty %}
-  <p>Постов пока нет.</p>
-{% endfor %}
+    {% empty %}
+    <p>Статей пока нет.</p>
+    {% endfor %}
+</div>
 {% endblock %}

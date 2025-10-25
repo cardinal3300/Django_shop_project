@@ -10,6 +10,10 @@ class BlogListView(ListView):
     template_name = 'blog/blog_list.html'
     context_object_name = 'posts'
 
+    def get_queryset(self):
+        # возвращаем только опубликованные статьи
+        return BlogPost.objects.filter(is_published=True).order_by('-created_at')
+
 
 class BlogDetailView(DetailView):
     model = BlogPost
@@ -17,24 +21,29 @@ class BlogDetailView(DetailView):
     context_object_name = 'post'
 
     def get_object(self, queryset=None):
-        post = super().get_object(queryset)
-        post.views_count += 1
-        post.save()
-        return post
+        obj = super().get_object(queryset)
+        obj.views += 1
+        obj.save(update_fields=['views'])
+        return obj
 
 
 class BlogCreateView(CreateView):
     model = BlogPost
     fields = ['title', 'content', 'preview', 'is_published']
     template_name = 'blog/blog_form.html'
-    success_url = reverse_lazy('blog:list')
+
+    def get_success_url(self):
+        return reverse_lazy('blog:detail', kwargs={'pk': self.object.pk})
 
 
 class BlogUpdateView(UpdateView):
     model = BlogPost
     fields = ['title', 'content', 'preview', 'is_published']
     template_name = 'blog/blog_form.html'
-    success_url = reverse_lazy('blog:list')
+
+    def get_success_url(self):
+        # после успешного редактирования возвращаем пользователя на страницу просмотра статьи
+        return reverse_lazy('blog:detail', kwargs={'pk': self.object.pk})
 
 
 class BlogDeleteView(DeleteView):
