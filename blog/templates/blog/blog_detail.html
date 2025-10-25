@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h2>{{ post.title }}</h2>
+  {% if post.preview %}
+    <img src="{{ post.preview.url }}" alt="{{ post.title }}" class="img-fluid mb-3">
+  {% endif %}
+  <p>{{ post.content }}</p>
+  <p><small>Просмотры: {{ post.views_count }}</small></p>
+{% endblock %}
