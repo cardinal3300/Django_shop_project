@@ -37,13 +37,15 @@
 
 ## ⚙️ Технологии
 
-Python 3.3
+Python 3.14
 
 Django 5.2.7
 
 HTML5 / Bootstrap 5.3
 
 SQLite (по умолчанию)
+
+PostgreSQL
 
 Git + GitFlow
 
@@ -112,7 +114,7 @@ Git + GitFlow
 
 - develop — основная ветка разработки
 
-- feature/homework_22 — текущая ветка задания
+- feature/homework_25 — текущая ветка задания
 
 ---
 

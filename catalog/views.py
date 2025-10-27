@@ -1,39 +1,48 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from .models import Product
 from .forms import ProductForm
 
 
-def home(request):
+class HomeView(ListView):
     """
-    Контроллер для отображения домашней страницы.
-    Возвращает шаблон home.html.
+    Главная страница — вывод последних 5 товаров.
+    Контекст: 'products' (в шаблоне ожидается именно этот ключ).
     """
-    # Получаем последние 5 товаров по дате создания
-    products = Product.objects.order_by('-created_at')[:5]
-    return render(request, 'catalog/home.html', {'products': products})
+    model = Product
+    template_name = 'catalog/home.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        # возвращаем последние 5 товаров
+        return Product.objects.order_by('-created_at')[:5]
 
 
-def contacts(request):
+class ContactsView(TemplateView):
     """
-    Контроллер для отображения страницы с контактной информацией.
+    Статическая страница контактов. Если нужна обработка формы — можно заменить
+    на View и переопределить post/get.
     """
-    return render(request, 'catalog/contacts.html')
+    template_name = 'catalog/contacts.html'
 
 
-def product_detail(request, pk):
+class ProductDetailView(DetailView):
     """
-    Контроллер для отображения подробной информации о товаре.
+    Детальная страница товара.
+    В шаблоне доступен объект product (context_object_name).
     """
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, 'catalog/product_detail.html', {'product': product})
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'
 
 
-def add_product(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('catalog:home')  # после сохранения — на главную
-    else:
-        form = ProductForm()
-    return render(request, 'catalog/add_product.html', {'form': form})
+class AddProductView(CreateView):
+    """
+    Форма добавления продукта.
+    Используем ProductForm (ModelForm) — он должен содержать поле purchase_price.
+    """
+    model = Product
+    form_class = ProductForm
+    template_name = 'catalog/add_product.html'
+    success_url = reverse_lazy('catalog:home')
+
