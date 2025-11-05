@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -16,5 +16,10 @@
         <p><strong>Последнее изменение:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}</p>
     </div>
 </div>
-<a href="/" class="btn btn-secondary">Назад</a>
+
+<div class="d-flex gap-2">
+    <a href="/" class="btn btn-secondary">Назад</a>
+    <a href="{% url 'catalog:product_update' product.id %}" class="btn btn-primary">Редактировать</a>
+    <a href="{% url 'catalog:product_confirm_delete' product.pk %}" class="btn btn-danger">Удалить</a>
+</div>
 {% endblock %}

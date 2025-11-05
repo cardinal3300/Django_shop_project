@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, Category
+from .models import Product
 
 
 class FeedbackForm(forms.Form):
@@ -29,7 +29,7 @@ class ProductForm(forms.ModelForm):
         fields = ['name', 'description', 'image', 'category', 'purchase_price']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 4}),
-            'price': forms.NumberInput(attrs={'step': 0.01}),
+            'purchase_price': forms.NumberInput(attrs={'step': 0.01}),
         }
 
     def clean_name(self):
