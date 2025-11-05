@@ -18,24 +18,43 @@ class FeedbackForm(forms.Form):
         widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Ваше сообщение...'})
     )
 
-# Список запрещённых слов (игнорируем регистр)
+# Список запрещённых слов
 FORBIDDEN_WORDS = [
     'казино', 'криптовалюта', 'крипта', 'биржа',
     'дешево', 'бесплатно', 'обман', 'полиция', 'радар'
 ]
+
+# Максимальное значение рисунка и возможный список форматов
+MAX_IMAGE_SIZE_MB = 5
+ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png']
+
 
 class ProductForm(forms.ModelForm):
     """Форма для создания и редактирования продукта с валидацией."""
     class Meta:
         model = Product
         fields = '__all__' # показываем все поля модели
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите название'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Описание'}),
-            'purchase_price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Цена'}),
-            'category': forms.Select(attrs={'class': 'form-control'}),
-            'image': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            # всем полям добавляем одинаковый стиль Bootstrap
+            field.widget.attrs['class'] = 'form-control'
+        # отдельно стилизуем булевое поле (чекбокс)
+        if 'is_published' in self.fields:
+            self.fields['is_published'].widget.attrs['class'] = 'form-check-input'
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if not image:
+            return image
+        # Проверка формата
+        if image.content_type not in ALLOWED_IMAGE_TYPES:
+            raise ValidationError('Допустимы только изображения JPEG или PNG.')
+        # Проверка размера
+        if image.size > MAX_IMAGE_SIZE_MB * 1024 * 1024:
+            raise ValidationError(f'Размер файла не должен превышать {MAX_IMAGE_SIZE_MB} МБ.')
+        return image
 
     def clean_name(self):
         """Проверка имени на запрещённые слова."""
