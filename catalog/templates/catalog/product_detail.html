@@ -1,11 +1,14 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
 <div class="card mb-4">
     {% if product.image %}
-    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+    <img src="{{ product.image.url }}"
+         class="card-img-top"
+         alt="{{ product.name }}"
+         style="max-width: 400px; height: auto; object-fit: contain;">
     {% endif %}
     <div class="card-body">
         <h2 class="card-title">{{ product.name }}</h2>
@@ -16,5 +19,10 @@
         <p><strong>Последнее изменение:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}</p>
     </div>
 </div>
-<a href="/" class="btn btn-secondary">Назад</a>
+
+<div class="d-flex gap-2">
+    <a href="/" class="btn btn-secondary">Назад</a>
+    <a href="{% url 'catalog:product_update' product.id %}" class="btn btn-primary">Редактировать</a>
+    <a href="{% url 'catalog:product_confirm_delete' product.pk %}" class="btn btn-danger">Удалить</a>
+</div>
 {% endblock %}
