@@ -2,6 +2,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, TemplateView
 from .models import Product
 from .forms import ProductForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class HomeView(ListView):
@@ -36,7 +37,7 @@ class ProductDetailView(DetailView):
     context_object_name = 'product'
 
 
-class AddProductView(CreateView):
+class AddProductView(LoginRequiredMixin, CreateView):
     """
     Форма добавления продукта.
     Используем ProductForm (ModelForm) — он должен содержать поле purchase_price.
@@ -45,4 +46,5 @@ class AddProductView(CreateView):
     form_class = ProductForm
     template_name = 'catalog/add_product.html'
     success_url = reverse_lazy('catalog:home')
+    login_url = 'users:login'
 
