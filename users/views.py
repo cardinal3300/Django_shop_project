@@ -1,10 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.conf import settings
 
-from .forms import UserRegisterForm, UserLoginForm
+from .forms import UserRegisterForm, UserLoginForm, UserProfileForm
 from .models import User
 
 
@@ -38,4 +39,15 @@ class UserLoginView(LoginView):
 
 class UserLogoutView(LogoutView):
     template_name = "users/logout.html"
+
+
+class UserProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserProfileForm
+    template_name = 'users/profile.html'
+    success_url = reverse_lazy('users:profile')
+
+    def get_object(self, queryset=None):
+        # пользователь может редактировать только свой профиль
+        return self.request.user
     
