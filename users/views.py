@@ -1,11 +1,11 @@
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic import CreateView, UpdateView
-from django.urls import reverse_lazy
 from django.core.mail import send_mail
-from django.conf import settings
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView
 
-from .forms import UserRegisterForm, UserLoginForm, UserProfileForm
+from .forms import UserLoginForm, UserProfileForm, UserRegisterForm
 from .models import User
 
 
@@ -29,25 +29,24 @@ class UserRegisterView(CreateView):
         return response
 
 
+class UserProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = UserProfileForm
+    template_name = "users/profile.html"
+    success_url = reverse_lazy("users:profile")
+
+    def get_object(self, queryset=None):
+        # пользователь может редактировать только свой профиль
+        return self.request.user
+
+
 class UserLoginView(LoginView):
     template_name = "users/login.html"
     authentication_form = UserLoginForm
 
     def get_success_url(self):
-        return reverse_lazy("users:login")
+        return reverse_lazy("catalog:home")
 
 
 class UserLogoutView(LogoutView):
     template_name = "users/logout.html"
-
-
-class UserProfileView(LoginRequiredMixin, UpdateView):
-    model = User
-    form_class = UserProfileForm
-    template_name = 'users/profile.html'
-    success_url = reverse_lazy('users:profile')
-
-    def get_object(self, queryset=None):
-        # пользователь может редактировать только свой профиль
-        return self.request.user
-    

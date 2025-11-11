@@ -1,50 +1,62 @@
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, TemplateView
-from .models import Product
-from .forms import ProductForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  TemplateView, UpdateView)
+
+from .forms import ProductForm
+from .models import Product
 
 
 class HomeView(ListView):
-    """
-    Главная страница — вывод последних 5 товаров.
-    Контекст: 'products' (в шаблоне ожидается именно этот ключ).
-    """
+    """Главная страница — вывод последних 5 товаров."""
+
     model = Product
-    template_name = 'catalog/home.html'
-    context_object_name = 'products'
+    template_name = "catalog/home.html"
+    context_object_name = "products"
 
     def get_queryset(self):
         # возвращаем последние 5 товаров
-        return Product.objects.order_by('-created_at')[:5]
+        return Product.objects.order_by("-created_at")[:5]
 
 
 class ContactsView(TemplateView):
-    """
-    Статическая страница контактов. Если нужна обработка формы — можно заменить
-    на View и переопределить post/get.
-    """
-    template_name = 'catalog/contacts.html'
+    """Статическая страница контактов."""
+
+    template_name = "catalog/contacts.html"
 
 
 class ProductDetailView(DetailView):
-    """
-    Детальная страница товара.
-    В шаблоне доступен объект product (context_object_name).
-    """
+    """Детальная страница товара."""
+
     model = Product
-    template_name = 'catalog/product_detail.html'
-    context_object_name = 'product'
+    template_name = "catalog/product_detail.html"
+    context_object_name = "product"
 
 
 class AddProductView(LoginRequiredMixin, CreateView):
-    """
-    Форма добавления продукта.
-    Используем ProductForm (ModelForm) — он должен содержать поле purchase_price.
-    """
+    """Добавление продукта."""
+
     model = Product
     form_class = ProductForm
-    template_name = 'catalog/add_product.html'
-    success_url = reverse_lazy('catalog:home')
-    login_url = 'users:login'
+    template_name = "catalog/product_form.html"
+    success_url = reverse_lazy("catalog:home")
+    login_url = "users:login"
 
+
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
+    """Редактирование продукта."""
+
+    model = Product
+    form_class = ProductForm
+    template_name = "catalog/product_form.html"
+    success_url = reverse_lazy("catalog:home")
+    login_url = "users:login"
+
+
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
+    """Удаление продукта."""
+
+    model = Product
+    template_name = "catalog/product_confirm_delete.html"
+    success_url = reverse_lazy("catalog:home")
+    login_url = "users:login"
