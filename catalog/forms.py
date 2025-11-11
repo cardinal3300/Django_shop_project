@@ -1,5 +1,5 @@
 from django import forms
-
+from django.core.exceptions import ValidationError
 from .models import Product
 
 
@@ -48,12 +48,55 @@ ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png"]
 
 
 class ProductForm(forms.ModelForm):
-    """Форма для создания и редактирования продукта с валидацией."""
+    """Форма создания и редактирования продукта с Bootstrap-стилизацией и валидацией."""
 
     class Meta:
         model = Product
-        fields = ["name", "description", "image", "category", "purchase_price"]
-        widgets = {
-            "description": forms.Textarea(attrs={"rows": 4}),
-            "purchase_price": forms.NumberInput(attrs={"step": 0.01}),
-        }
+        fields = '__all__'  # показываем все поля модели
+
+    def __init__(self, *args, **kwargs):
+        """Добавляем классы Bootstrap для всех полей формы."""
+        super().__init__(*args, **kwargs)
+
+        # общая стилизация для текстовых и числовых полей
+        for field_name, field in self.fields.items():
+            if isinstance(field.widget, (forms.TextInput, forms.NumberInput, forms.Textarea, forms.Select)):
+                field.widget.attrs.update({
+                    'class': 'form-control',
+                })
+            elif isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs.update({
+                    'class': 'form-check-input',
+                })
+            elif isinstance(field.widget, forms.ClearableFileInput):
+                field.widget.attrs.update({
+                    'class': 'form-control',
+                })
+
+        # Дополнительные placeholder'ы для удобства
+        self.fields['name'].widget.attrs['placeholder'] = 'Введите название товара'
+        self.fields['description'].widget.attrs['placeholder'] = 'Введите описание товара'
+        self.fields['purchase_price'].widget.attrs['placeholder'] = 'Введите цену'
+
+    def clean_name(self):
+        """Проверка имени на запрещённые слова."""
+        name = self.cleaned_data.get('name', '')
+        for word in FORBIDDEN_WORDS:
+            if word.lower() in name.lower():
+                raise ValidationError(f"Название не может содержать запрещённое слово: «{word}».")
+        return name
+
+    def clean_description(self):
+        """Проверка описания на запрещённые слова."""
+        description = self.cleaned_data.get('description', '')
+        for word in FORBIDDEN_WORDS:
+            if word.lower() in description.lower():
+                raise ValidationError(f"Описание не может содержать запрещённое слово: «{word}».")
+        return description
+
+    def clean_purchase_price(self):
+        """Проверка, что цена не отрицательная."""
+        price = self.cleaned_data.get('purchase_price')
+        if price is not None and price < 0:
+            raise ValidationError("Цена не может быть отрицательной.")
+        return price

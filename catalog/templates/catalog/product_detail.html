@@ -3,7 +3,7 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm mx-auto" style="max-width: 500px;">
+<div class="card shadow-sm mx-auto" style="max-width: 400px; height: auto; object-fit: contain;">
     {% if product.image %}
     <img src="{{ product.image.url }}"
          class="card-img-top"
