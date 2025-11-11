@@ -29,7 +29,27 @@ class FeedbackForm(forms.Form):
     )
 
 
+# Список запрещённых слов
+FORBIDDEN_WORDS = [
+    "казино",
+    "криптовалюта",
+    "крипта",
+    "биржа",
+    "дешево",
+    "бесплатно",
+    "обман",
+    "полиция",
+    "радар",
+]
+
+# Максимальное значение рисунка и возможный список форматов
+MAX_IMAGE_SIZE_MB = 5
+ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png"]
+
+
 class ProductForm(forms.ModelForm):
+    """Форма для создания и редактирования продукта с валидацией."""
+
     class Meta:
         model = Product
         fields = ["name", "description", "image", "category", "purchase_price"]

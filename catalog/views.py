@@ -6,6 +6,8 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 from .forms import ProductForm
 from .models import Product
 
+    template_name = "catalog/contacts.html"
+    success_url = reverse_lazy("catalog:home")
 
 class HomeView(ListView):
     """Главная страница — вывод последних 5 товаров."""

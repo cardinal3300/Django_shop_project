@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Редактировать продукт{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Редактировать продукт: {{ product.name }}</h2>
+    <form method="post" enctype="multipart/form-data" class="needs-validation">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+        <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-secondary">Назад</a>
+    </form>
+</div>
+{% endblock %}
