@@ -1,6 +1,6 @@
 from django.urls import path
 
-from catalog.views import (AddProductView, ContactsView, HomeView,
+from .views import (AddProductView, ContactsView, HomeView,
                            ProductDeleteView, ProductDetailView,
                            ProductUpdateView)
 

@@ -3,7 +3,7 @@
 {% block title %}{{ view.object|default_if_none:"Добавить товар" }}{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm mx-auto" style="max-width: 500px;">
+<div class="card shadow-lg mx-auto" style="max-width: 400px;">
     <div class="card-header bg-dark text-white">
         <h5 class="mb-0">
             {% if view.object %}
@@ -19,10 +19,10 @@
             {{ form.as_p }}
 
             <div class="d-flex justify-content-between mt-3">
-                <a href="{% url 'catalog:home' %}" class="btn btn-secondary">Назад</a>
+                <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">Назад</a>
                 <button type="submit" class="btn btn-outline-primary">
                     {% if view.object %}
-                        ✏️ Сохранить изменения
+                        💾 Сохранить изменения
                     {% else %}
                         ✏️ Добавить товар
                     {% endif %}

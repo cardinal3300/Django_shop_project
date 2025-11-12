@@ -3,7 +3,7 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm mx-auto" style="max-width: 400px; height: auto; object-fit: contain;">
+<div class="card shadow-lg mx-auto" style="max-width: 400px; height: auto; object-fit: contain;">
     {% if product.image %}
     <img src="{{ product.image.url }}"
          class="card-img-top"
@@ -18,7 +18,7 @@
         <p><strong>Дата создания:</strong> {{ product.created_at|date:"d.m.Y H:i" }}</p>
         <p><strong>Последнее изменение:</strong> {{ product.updated_at|date:"d.m.Y H:i" }}</p>
         <div class="d-flex justify-content-between mt-4">
-            <a href="{% url 'catalog:home' %}" class="btn btn-secondary">Назад</a>
+            <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">Назад</a>
 
             {% if user.is_authenticated %}
                 <div class="d-flex gap-2">

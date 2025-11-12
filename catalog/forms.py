@@ -4,6 +4,13 @@ from .models import Product
 
 
 class FeedbackForm(forms.Form):
+    """Форма обратной связи для страницы контактов.
+    Позволяет пользователю отправить сообщение администрации сайта.
+    Поля:
+    - name: имя отправителя;
+    - email: адрес электронной почты для обратного ответа;
+    - message: текст сообщения."""
+
     name = forms.CharField(
         label="Ваше имя",
         max_length=100,
@@ -27,7 +34,6 @@ class FeedbackForm(forms.Form):
             }
         ),
     )
-
 
 # Список запрещённых слов
 FORBIDDEN_WORDS = [
