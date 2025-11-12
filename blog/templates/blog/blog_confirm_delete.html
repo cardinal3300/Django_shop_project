@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
+
+{% block title %}Удалить блог{% endblock %}
+
 {% block content %}
-  <h2>Удалить пост "{{ object.title }}"?</h2>
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Удалить</button>
-    <a href="{% url 'blog:list' %}" class="btn btn-secondary">Отмена</a>
-  </form>
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 text-center">
+        <h3 class="mb-3">Удалить блог "{{ object.title }}"?</h3>
+        <p>Это действие нельзя отменить.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">🗑 Удалить</button>
+            <a href="{% url 'blog:blog_detail' object.pk %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
 {% endblock %}

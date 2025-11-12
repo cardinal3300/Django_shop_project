@@ -1,9 +1,34 @@
 {% extends 'base.html' %}
+
+{% block title %}{{ view.object|default_if_none:"Создать новый блог" }}{% endblock %}
+
 {% block content %}
-  <h2>{% if object %}Редактировать пост{% else %}Создать пост{% endif %}</h2>
-  <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">Сохранить</button>
-  </form>
+<div class="card shadow-lg mx-auto" style="max-width: 400px;">
+    <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">
+            {% if object %}
+                ✏️ Редактировать блог
+            {% else %}
+                ➕ Создать новый блог
+            {% endif %}
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <div class="d-flex justify-content-between mt-3">
+                <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary">Назад</a>
+                <button type="submit" class="btn btn-outline-primary">
+                    {% if object %}
+                        💾 Сохранить изменения
+                    {% else %}
+                        ✏️ Создать новый блог
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

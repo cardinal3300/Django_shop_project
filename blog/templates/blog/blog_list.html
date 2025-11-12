@@ -1,25 +1,35 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}Блог{% endblock %}
+{% block title %}Блоги{% endblock %}
 
 {% block content %}
-<h1>Блог</h1>
-<div class="row">
-    {% for post in posts %}
-    <div class="col-md-4 mb-4">
-        <div class="card h-100">
-            {% if post.preview %}
-            <img src="{{ post.preview.url }}" class="card-img-top" alt="{{ post.title }}">
-            {% endif %}
-            <div class="card-body">
-                <h5 class="card-title">{{ post.title }}</h5>
-                <p class="card-text">{{ post.content|truncatechars:100 }}</p>
-                <a href="{% url 'blog:detail' post.pk %}" class="btn btn-primary">Подробнее</a>
-            </div>
-        </div>
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Блог</h2>
+        {% if user.is_authenticated %}
+            <a href="{% url 'blog:blog_form' %}" class="btn btn-outline-primary">
+                ➕ Создать блог
+            </a>
+        {% endif %}
     </div>
-    {% empty %}
-    <p>Статей пока нет.</p>
-    {% endfor %}
+
+    {% if posts %}
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100 shadow-lg">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.content|truncatechars:100 }}</p>
+                            <a href="{% url 'blog:blog_detail' post.pk %}" class="btn btn-outline-primary">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Пока нет опубликованных записей.</p>
+    {% endif %}
 </div>
 {% endblock %}

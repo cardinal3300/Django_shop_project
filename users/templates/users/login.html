@@ -2,7 +2,7 @@
 {% block title %}Вход в систему{% endblock %}
 
 {% block content %}
-<div class="container mt-5" style="max-width: 500px;">
+<div class="container mt-5" style="max-width: 400px;">
     <h2 class="mb-4 text-center">Войти</h2>
 
     {% if form.errors %}
@@ -14,7 +14,7 @@
     <form method="post" class="border p-4 rounded shadow-sm bg-light">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-success w-100">Войти</button>
+        <button type="submit" class="btn btn-outline-success w-100">Войти</button>
     </form>
 
     <div class="text-center mt-3">

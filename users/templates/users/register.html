@@ -2,13 +2,13 @@
 {% block title %}Регистрация{% endblock %}
 
 {% block content %}
-<div class="container mt-5" style="max-width: 500px;">
+<div class="container mt-5" style="max-width: 400px;">
     <h2 class="mb-4 text-center">Регистрация</h2>
 
-    <form method="post" class="border p-4 rounded shadow-sm bg-light">
+    <form method="post" class="border p-4 rounded shadow-lg bg-light">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+        <button type="submit" class="btn btn-outline-primary w-100">Зарегистрироваться</button>
     </form>
 
     <div class="text-center mt-3">

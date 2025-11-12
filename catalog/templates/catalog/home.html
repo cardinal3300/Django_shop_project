@@ -7,7 +7,7 @@
     <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">Добро пожаловать в наш интернет-магазин!</h1>
         <p class="col-md-8 fs-4">Здесь вы найдёте лучшие товары по выгодным ценам.</p>
-        <a class="btn btn-primary btn-lg" href="/contacts/">Связаться с нами</a>
+        <a class="btn btn-outline-primary btn-lg" href="/contacts/">Связаться с нами</a>
     </div>
 </div>
 
@@ -24,7 +24,7 @@
                 <p class="card-text">{{ product.description|truncatechars:100 }}</p>
                 <p><strong>Категория:</strong> {{ product.category.name }}</p>
                 <p><strong>Цена:</strong> {{ product.purchase_price }} ₽</p>
-                <a href="{% url 'catalog:product_detail' product.id %}" class="btn btn-primary">Подробнее</a>
+                <a href="{% url 'catalog:product_detail' product.id %}" class="btn btn-outline-primary">Подробнее</a>
             </div>
         </div>
     </div>
