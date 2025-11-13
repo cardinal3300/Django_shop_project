@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -48,6 +49,14 @@ class Product(models.Model):
         choices=STATUS_CHOICES,
         default="draft",
         verbose_name="Статус публикации",
+    )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="products",
+        verbose_name="Владелец",
+        null=True,
+        blank=True,
     )
 
     class Meta:
