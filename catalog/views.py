@@ -1,3 +1,6 @@
+from django.contrib.auth.decorators import permission_required
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
@@ -5,6 +8,16 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 
 from .forms import ProductForm
 from .models import Product
+
+
+@permission_required("catalog.can_unpublish_product", raise_exception=True)
+def unpublish_product(request, pk):
+    """Отмена публикации (доступно только модератору)."""
+    product = get_object_or_404(Product, pk=pk)
+    product.status = "unpublished"
+    product.save()
+    messages.warning(request, f"Продукт «{product.name}» снят с публикации.")
+    return redirect("catalog:product_detail", pk=pk)
 
 
 class HomeView(ListView):
