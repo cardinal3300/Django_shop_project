@@ -23,12 +23,13 @@
 
             {% if user.is_authenticated %}
                 <div class="d-flex gap-2">
-                    {% if product.owner and product.owner.id == user.id %}
+                    <!-- Владелец может редактировать -->
+                    {% if product.owner.id == user.id %}
                     <a href="{% url 'catalog:product_form' product.pk %}" class="btn btn-outline-primary">
                         ✏️ Редактировать
                     </a>
-                    {% endif %}
-                    {% if product.owner and product.owner.id == user.id or perms.catalog.can_unpublish_product %}
+                    <!-- Владелец или модератор может удалять -->
+                    {% elif perms.catalog.can_unpublish_product %}
                     <a href="{% url 'catalog:product_confirm_delete' product.pk %}" class="btn btn-outline-danger">
                         🗑️ Удалить
                     </a>

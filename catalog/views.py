@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -9,12 +9,12 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 from .forms import ProductForm
 from .models import Product
 
-
+@login_required
 @permission_required("catalog.can_unpublish_product", raise_exception=True)
 def can_unpublish_product(request, pk):
-    """Отмена публикации и добавление товара (доступно только владельцу и модератору)."""
+    """Отмена публикации (доступно только владельцу и модераторам)."""
     product = get_object_or_404(Product, pk=pk)
-    product.status = "draft"
+    product.status = "unpublished"
     product.save()
     messages.warning(request, f"Продукт «{product.name}» снят с публикации.")
     return redirect("catalog:product_detail", pk=product.pk)
@@ -29,7 +29,7 @@ class HomeView(ListView):
 
     def get_queryset(self):
         # возвращаем последние 5 товаров
-        return Product.objects.order_by("-created_at")[:5]
+        return Product.objects.order_by("-created_at")[:5] and Product.objects.filter(status='published')
 
 
 class ContactsView(TemplateView):

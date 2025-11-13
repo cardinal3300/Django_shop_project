@@ -15,7 +15,7 @@
             <li class="nav-item"><a class="nav-link" href="/">Главная</a></li>
             <li class="nav-item"><a class="nav-link" href="/contacts/">Контакты</a></li>
             <li class="nav-item"><a class="nav-link" href="/blog/">Блог</a></li>
-            {% if user.is_authenticated and user.owner.id %}
+            {% if perms.catalog.add_product %}
               <li class="nav-item"><a class="nav-link" href="{% url 'catalog:product_form' %}">Добавить товар</a>
               </li>
             {% endif %}

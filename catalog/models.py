@@ -21,7 +21,6 @@ class Product(models.Model):
     """Товар"""
 
     STATUS_CHOICES = [
-        ("draft", "Черновик"),
         ("published", "Опубликован"),
         ("unpublished", "Снято с публикации"),
     ]
@@ -47,7 +46,7 @@ class Product(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default="draft",
+        default="published",
         verbose_name="Статус публикации",
     )
     owner = models.ForeignKey(
@@ -64,7 +63,7 @@ class Product(models.Model):
         verbose_name_plural = "Товары"
         ordering = ["-created_at"]
         permissions = [
-            ("can_unpublish_product", "Может снимать с публикации, удалять и редактировать продукт"),
+            ("can_unpublish_product", "Может снимать с публикации"),
         ]
 
     def __str__(self):

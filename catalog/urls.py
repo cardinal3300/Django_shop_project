@@ -13,5 +13,5 @@ urlpatterns = [
     path("add/", AddProductView.as_view(), name="product_form"),
     path("product/<int:pk>/update/", ProductUpdateView.as_view(), name="product_form"),
     path("product/<int:pk>/delete/", ProductDeleteView.as_view(), name="product_confirm_delete"),
-    path("unpublish/<int:pk>/", can_unpublish_product, name="can_unpublish_product"),
+    path("unpublished/<int:pk>/", can_unpublish_product, name="can_unpublish_product"),
 ]

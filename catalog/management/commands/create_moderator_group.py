@@ -17,11 +17,8 @@ class Command(BaseCommand):
         can_unpublish = Permission.objects.get(
             codename="can_unpublish_product", content_type=product_ct
         )
-        can_delete = Permission.objects.get(
-            codename="delete_product", content_type=product_ct
-        )
 
-        group.permissions.add(can_unpublish, can_delete)
+        group.permissions.add(can_unpublish)
 
         self.stdout.write(
             self.style.SUCCESS(
