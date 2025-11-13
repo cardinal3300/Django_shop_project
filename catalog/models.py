@@ -64,7 +64,7 @@ class Product(models.Model):
         verbose_name_plural = "Товары"
         ordering = ["-created_at"]
         permissions = [
-            ("can_unpublish_product", "Может снимать продукт с публикации"),
+            ("can_unpublish_product", "Может снимать с публикации, удалять и редактировать продукт"),
         ]
 
     def __str__(self):

@@ -5,7 +5,6 @@ from django.contrib.contenttypes.models import ContentType
 
 
 class Command(BaseCommand):
-    help = "Создаёт группу 'Модератор продуктов' с необходимыми правами"
 
     def handle(self, *args, **options):
         # 1. Создаём группу
