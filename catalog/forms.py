@@ -58,7 +58,7 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = '__all__'  # показываем все поля модели
+        fields = ['name', 'description', 'image', 'category', 'purchase_price', 'status']
 
     def __init__(self, *args, **kwargs):
         """Добавляем классы Bootstrap для всех полей формы."""
@@ -83,6 +83,7 @@ class ProductForm(forms.ModelForm):
         self.fields['name'].widget.attrs['placeholder'] = 'Введите название товара'
         self.fields['description'].widget.attrs['placeholder'] = 'Введите описание товара'
         self.fields['purchase_price'].widget.attrs['placeholder'] = 'Введите цену'
+        self.fields['status'].widget.attrs['placeholder'] = 'Статус публикации'
 
     def clean_name(self):
         """Проверка имени на запрещённые слова."""
