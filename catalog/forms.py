@@ -62,7 +62,7 @@ class ProductForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """Добавляем классы Bootstrap для всех полей формы."""
-        super().__init__(*args, **kwargs)
+        super(ProductForm, self).__init__(*args, **kwargs)
 
         # общая стилизация для текстовых и числовых полей
         for field_name, field in self.fields.items():

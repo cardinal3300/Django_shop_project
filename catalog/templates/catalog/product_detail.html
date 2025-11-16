@@ -10,9 +10,11 @@
          alt="{{ product.name }}"
          style="max-width: 400px; height: auto; object-fit: contain;">
     {% endif %}
+
     <div class="card-body">
         <h2 class="card-title">{{ product.name }}</h2>
         <p class="card-text">{{ product.description }}</p>
+
         <p><strong>Категория:</strong> {{ product.category.name }}</p>
         <p><strong>Цена:</strong> {{ product.purchase_price }} ₽</p>
         <p><strong>Дата создания:</strong> {{ product.created_at|date:"d.m.Y H:i" }}</p>
@@ -23,25 +25,31 @@
 
             {% if user.is_authenticated %}
                 <div class="d-flex gap-2">
-                    <!-- Владелец может редактировать -->
-                    {% if product.owner.id == user.id %}
-                    <a href="{% url 'catalog:product_form' product.pk %}" class="btn btn-outline-primary">
-                        ✏️ Редактировать
-                    </a>
-                    <!-- Владелец или модератор может удалять -->
-                    {% elif perms.catalog.can_unpublish_product %}
-                    <a href="{% url 'catalog:product_confirm_delete' product.pk %}" class="btn btn-outline-danger">
-                        🗑️ Удалить
-                    </a>
+
+                    <!--Редактировать может только владелец-->
+                    {% if product.owner_id == user.id %}
+                        <a href="{% url 'catalog:product_form' product.pk %}" class="btn btn-outline-primary">✏️ Редактировать</a>
+                    {% endif %}
+
+                    <!--Удалять может и владелец и модератор-->
+                    {% if product.owner_id == user.id or perms.catalog.can_unpublish_product %}
+                        <a href="{% url 'catalog:product_confirm_delete' product.pk %}"
+                           class="btn btn-outline-danger">
+                            🗑️ Удалить
+                        </a>
                     {% endif %}
                 </div>
             {% endif %}
         </div>
+
+        <!--Снять с публикации может и владелец и модератор-->
         {% if perms.catalog.can_unpublish_product %}
             {% if product.status == "published" %}
                 <div class="text-center mt-3">
                     <a href="{% url 'catalog:can_unpublish_product' product.pk %}"
-                   class="btn btn-outline-warning">🚫 Снять с публикации</a>
+                       class="btn btn-outline-warning">
+                        🚫 Снять с публикации
+                    </a>
                 </div>
             {% endif %}
         {% endif %}

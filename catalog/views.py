@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -10,7 +10,6 @@ from .forms import ProductForm
 from .models import Product
 
 @login_required
-@permission_required("catalog.can_unpublish_product", raise_exception=True)
 def can_unpublish_product(request, pk):
     """Отмена публикации (доступно только владельцу и модераторам)."""
     product = get_object_or_404(Product, pk=pk)
@@ -29,7 +28,7 @@ class HomeView(ListView):
 
     def get_queryset(self):
         # возвращаем последние 5 товаров
-        return Product.objects.order_by("-created_at")[:5] and Product.objects.filter(status='published')
+        return Product.objects.order_by("-created_at")[:5]
 
 
 class ContactsView(TemplateView):
@@ -78,10 +77,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         product = self.get_object()
         # Редактировать может владелец или модератор
-        return (
-                product.owner == self.request.user
-                or self.request.user.has_perm("catalog.can_unpublish_product")
-        )
+        return product.owner == self.request.user
 
     def get_success_url(self):
         return reverse_lazy("catalog:product_detail", kwargs={"pk": self.object.pk})
