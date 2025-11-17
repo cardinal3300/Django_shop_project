@@ -10,7 +10,23 @@ from django.views.decorators.cache import cache_page
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   TemplateView, UpdateView)
 from .forms import ProductForm
-from .models import Product
+from .models import Product, Category
+from .servisec import get_products_by_category
+
+
+class CategoryProductsView(ListView):
+    """Просмотр категорий."""
+    template_name = "catalog/category_products.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        category_id = self.kwargs["category_id"]
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = Category.objects.get(pk=self.kwargs["category_id"])
+        return context
 
 
 @login_required
@@ -37,6 +53,12 @@ class HomeView(ListView):
             queryset = super().get_queryset()
             cache.set("home_queryset", queryset, 60 * 15)
         return queryset.order_by("-created_at")[:5]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Добавляем категории в контекст
+        context["categories"] = Category.objects.all()
+        return context
 
 
 class ContactsView(TemplateView):
@@ -113,3 +135,9 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
                 product.owner == self.request.user
                 or self.request.user.has_perm("catalog.can_unpublish_product")
         )
+
+    def delete(self, request, *args, **kwargs):
+        """Очищает кэш, когда владелец или модератор удаляет товар."""
+        product = self.get_object()
+        cache.delete(f"category_products_{product.category_id}")
+        return super().delete(request, *args, **kwargs)
