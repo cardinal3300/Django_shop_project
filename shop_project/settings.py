@@ -129,3 +129,11 @@ DEFAULT_FROM_EMAIL = "noreply@django-shop.local"
 AUTH_USER_MODEL = "users.User"
 
 LOGIN_REDIRECT_URL = "/"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.getenv('REDIS_HOST'),
+        "IGNORE_EXCEPTIONS": True,  # чтобы сайт не падал, если Redis отключён
+        }
+}
