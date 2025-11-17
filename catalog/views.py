@@ -1,16 +1,35 @@
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.core.cache import cache
+from django.views.decorators.cache import cache_page
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   TemplateView, UpdateView)
-
 from .forms import ProductForm
-from .models import Product
+from .models import Product, Category
+from .servisec import get_products_by_category
+
+
+class CategoryProductsView(ListView):
+    """Просмотр категорий."""
+    template_name = "catalog/category_products.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        category_id = self.kwargs["category_id"]
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = Category.objects.get(pk=self.kwargs["category_id"])
+        return context
+
 
 @login_required
-@permission_required("catalog.can_unpublish_product", raise_exception=True)
 def can_unpublish_product(request, pk):
     """Отмена публикации (доступно только владельцу и модераторам)."""
     product = get_object_or_404(Product, pk=pk)
@@ -28,8 +47,18 @@ class HomeView(ListView):
     context_object_name = "products"
 
     def get_queryset(self):
+        queryset = cache.get("home_queryset")
         # возвращаем последние 5 товаров
-        return Product.objects.order_by("-created_at")[:5] and Product.objects.filter(status='published')
+        if not queryset:
+            queryset = super().get_queryset()
+            cache.set("home_queryset", queryset, 60 * 15)
+        return queryset.order_by("-created_at")[:5]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Добавляем категории в контекст
+        context["categories"] = Category.objects.all()
+        return context
 
 
 class ContactsView(TemplateView):
@@ -38,6 +67,7 @@ class ContactsView(TemplateView):
     template_name = "catalog/contacts.html"
 
 
+@method_decorator(cache_page(60 * 15), name='dispatch')
 class ProductDetailView(DetailView):
     """Детальная страница товара."""
 
@@ -78,13 +108,16 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         product = self.get_object()
         # Редактировать может владелец или модератор
-        return (
-                product.owner == self.request.user
-                or self.request.user.has_perm("catalog.can_unpublish_product")
-        )
+        return product.owner == self.request.user
 
     def get_success_url(self):
         return reverse_lazy("catalog:product_detail", kwargs={"pk": self.object.pk})
+
+    def form_valid(self, form):
+        """Очищает кэш, когда владелец редактирует товар."""
+        response = super().form_valid(form)
+        cache.clear()
+        return response
 
 
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -102,3 +135,9 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
                 product.owner == self.request.user
                 or self.request.user.has_perm("catalog.can_unpublish_product")
         )
+
+    def delete(self, request, *args, **kwargs):
+        """Очищает кэш, когда владелец или модератор удаляет товар."""
+        product = self.get_object()
+        cache.delete(f"category_products_{product.category_id}")
+        return super().delete(request, *args, **kwargs)
