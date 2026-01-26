@@ -8,7 +8,7 @@ from .models import User
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
     # отображаемые поля в списке
-    list_display = ("id", "email", "username", "is_staff", "is_active")
+    list_display = ("email", "username", "is_staff", "is_active")
     list_filter = ("is_staff", "is_superuser", "is_active", "country")
 
     # поля, которые редактируются в форме редактирования
