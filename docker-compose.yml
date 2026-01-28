@@ -11,7 +11,7 @@ services:
     ports:
       - "${DB_PORT}"
     healthcheck:
-      test: pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -29,8 +29,10 @@ services:
     expose:
       - "8000"
     depends_on:
-      - db
-      - redis
+      db:
+        conditions: service-healthy
+      redis:
+        conditions: service-healthy
 
   redis:
     image: redis:7
@@ -52,8 +54,10 @@ services:
     env_file:
       - .env
     depends_on:
-      - redis
-      - db
+      redis:
+        conditions: service-healthy
+      db:
+        conditions: service-healthy
 
 #  celery-beat:
 #    build: .
