@@ -30,9 +30,9 @@ services:
       - "8000"
     depends_on:
       db:
-        conditions: service-healthy
+        condition: service-healthy
       redis:
-        conditions: service-healthy
+        condition: service-healthy
 
   redis:
     image: redis:7
@@ -55,9 +55,9 @@ services:
       - .env
     depends_on:
       redis:
-        conditions: service-healthy
+        condition: service-healthy
       db:
-        conditions: service-healthy
+        condition: service-healthy
 
 #  celery-beat:
 #    build: .
