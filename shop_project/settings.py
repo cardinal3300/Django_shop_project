@@ -125,6 +125,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+CSRF_TRUSTED_ORIGINS = ("https://read-and-write.example.com",)
+
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 REDIS_URL = os.getenv("REDIS_URL")
