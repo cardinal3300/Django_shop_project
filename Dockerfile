@@ -10,4 +10,4 @@ COPY . .
 
 RUN mkdir -p /app/media
 
-EXPOSE 8000
+EXPOSE 8001

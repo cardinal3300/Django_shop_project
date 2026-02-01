@@ -6,8 +6,14 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.core.cache import cache
 from django.views.decorators.cache import cache_page
-from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
-                                  TemplateView, UpdateView)
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    ListView,
+    TemplateView,
+    UpdateView,
+)
 from .forms import ProductForm
 from .models import Product, Category
 from .servisec import get_products_by_category
@@ -15,6 +21,7 @@ from .servisec import get_products_by_category
 
 class CategoryProductsView(ListView):
     """Просмотр категорий."""
+
     template_name = "catalog/category_products.html"
     context_object_name = "products"
 
@@ -66,7 +73,7 @@ class ContactsView(TemplateView):
     template_name = "catalog/contacts.html"
 
 
-@method_decorator(cache_page(60 * 15), name='dispatch')
+@method_decorator(cache_page(60 * 15), name="dispatch")
 class ProductDetailView(DetailView):
     """Детальная страница товара."""
 
@@ -130,9 +137,8 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         product = self.get_object()
         # Удалять может владелец или модератор
-        return (
-                product.owner == self.request.user
-                or self.request.user.has_perm("catalog.can_unpublish_product")
+        return product.owner == self.request.user or self.request.user.has_perm(
+            "catalog.can_unpublish_product"
         )
 
     def delete(self, request, *args, **kwargs):

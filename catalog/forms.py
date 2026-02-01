@@ -35,6 +35,7 @@ class FeedbackForm(forms.Form):
         ),
     )
 
+
 # Список запрещённых слов
 FORBIDDEN_WORDS = [
     "казино",
@@ -58,7 +59,14 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['name', 'description', 'image', 'category', 'purchase_price', 'status']
+        fields = [
+            "name",
+            "description",
+            "image",
+            "category",
+            "purchase_price",
+            "status",
+        ]
 
     def __init__(self, *args, **kwargs):
         """Добавляем классы Bootstrap для всех полей формы."""
@@ -66,44 +74,59 @@ class ProductForm(forms.ModelForm):
 
         # общая стилизация для текстовых и числовых полей
         for field_name, field in self.fields.items():
-            if isinstance(field.widget, (forms.TextInput, forms.NumberInput, forms.Textarea, forms.Select)):
-                field.widget.attrs.update({
-                    'class': 'form-control',
-                })
+            if isinstance(
+                field.widget,
+                (forms.TextInput, forms.NumberInput, forms.Textarea, forms.Select),
+            ):
+                field.widget.attrs.update(
+                    {
+                        "class": "form-control",
+                    }
+                )
             elif isinstance(field.widget, forms.CheckboxInput):
-                field.widget.attrs.update({
-                    'class': 'form-check-input',
-                })
+                field.widget.attrs.update(
+                    {
+                        "class": "form-check-input",
+                    }
+                )
             elif isinstance(field.widget, forms.ClearableFileInput):
-                field.widget.attrs.update({
-                    'class': 'form-control',
-                })
+                field.widget.attrs.update(
+                    {
+                        "class": "form-control",
+                    }
+                )
 
         # Дополнительные placeholder'ы для удобства
-        self.fields['name'].widget.attrs['placeholder'] = 'Введите название товара'
-        self.fields['description'].widget.attrs['placeholder'] = 'Введите описание товара'
-        self.fields['purchase_price'].widget.attrs['placeholder'] = 'Введите цену'
-        self.fields['status'].widget.attrs['placeholder'] = 'Статус публикации'
+        self.fields["name"].widget.attrs["placeholder"] = "Введите название товара"
+        self.fields["description"].widget.attrs[
+            "placeholder"
+        ] = "Введите описание товара"
+        self.fields["purchase_price"].widget.attrs["placeholder"] = "Введите цену"
+        self.fields["status"].widget.attrs["placeholder"] = "Статус публикации"
 
     def clean_name(self):
         """Проверка имени на запрещённые слова."""
-        name = self.cleaned_data.get('name', '')
+        name = self.cleaned_data.get("name", "")
         for word in FORBIDDEN_WORDS:
             if word.lower() in name.lower():
-                raise ValidationError(f"Название не может содержать запрещённое слово: «{word}».")
+                raise ValidationError(
+                    f"Название не может содержать запрещённое слово: «{word}»."
+                )
         return name
 
     def clean_description(self):
         """Проверка описания на запрещённые слова."""
-        description = self.cleaned_data.get('description', '')
+        description = self.cleaned_data.get("description", "")
         for word in FORBIDDEN_WORDS:
             if word.lower() in description.lower():
-                raise ValidationError(f"Описание не может содержать запрещённое слово: «{word}».")
+                raise ValidationError(
+                    f"Описание не может содержать запрещённое слово: «{word}»."
+                )
         return description
 
     def clean_purchase_price(self):
         """Проверка, что цена не отрицательная."""
-        price = self.cleaned_data.get('purchase_price')
+        price = self.cleaned_data.get("purchase_price")
         if price is not None and price < 0:
             raise ValidationError("Цена не может быть отрицательной.")
         return price

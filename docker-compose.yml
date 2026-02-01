@@ -1,4 +1,5 @@
-name: django_shop_project
+name: Django_shop_project
+
 services:
   db:
     image: postgres:16
@@ -7,7 +8,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     expose:
-      - "5433"
+      - "5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
@@ -26,18 +27,18 @@ services:
 
   backend:
     build: .
-    command: sh -c "python manage.py collectstatic --no-input && gunicorn shop_project.wsgi:application --bind 0.0.0.0:8000"
+    command: sh -c "python manage.py collectstatic --noinput && gunicorn shop_project.wsgi:application --bind 0.0.0.0:8001"
     expose:
-      - "8000"
+      - "8001"
     env_file: .env
     environment:
       POSTGRES_HOST: db
-      REDIS_URL: redis://redis:6379/1
+      REDIS_URL: redis://redis:6379/0
     volumes:
       - .:/app
       - static_volume:/app/static
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8000/admin/login/ || exit 1" ]
+      test: ["CMD-SHELL", "curl -f http://localhost:8001/admin/login/ || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -54,7 +55,7 @@ services:
     volumes:
       - redis_data:/data
     expose:
-      - "6380"
+      - "6379"
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 3s

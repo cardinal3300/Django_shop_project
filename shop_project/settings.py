@@ -125,7 +125,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-CSRF_TRUSTED_ORIGINS = ("https://read-and-write.example.com",)
+CSRF_TRUSTED_ORIGINS = ("https://read-and-write.example.com",
+                        os.getenv("CSRF_TRUSTED")
+                        )
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
@@ -133,7 +135,7 @@ REDIS_URL = os.getenv("REDIS_URL")
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 CELERY_BROKER_URL = os.getenv("REDIS_URL")
-CELERY_RESULT_BACKEND= os.getenv("REDIS_URL")
+CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
@@ -143,6 +145,6 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": os.getenv('REDIS_URL'),
-        "IGNORE_EXCEPTIONS": True, # чтобы сайт не падал, если Redis отключён
-        }
+        "IGNORE_EXCEPTIONS": True,  # чтобы сайт не падал, если Redis отключён
+    }
 }
